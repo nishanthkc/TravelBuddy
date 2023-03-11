@@ -1,11 +1,5 @@
 import openai
 
-import spacy
-from spacy import displacy
-from collections import Counter
-import en_core_web_sm
-nlp = en_core_web_sm.load()
-
 def Ask(prompt):
     # prompt = sys.argv[1]
     # prompt = "who are you" here we will insert the question
