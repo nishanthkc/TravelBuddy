@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Travel Buddy</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'askme/style.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container cont-center test">
+    <div class="container cont-center">
+      <div class="container text-center">
+        <h1><b>Travel Buddy</b></h1>
+        <!-- <span><b>Your personal travel assistant</b></span> -->
+        <!-- <span><b>Let Travel Buddy take the guesswork out of planning your trip</b></span> -->
+        <!-- <span><b>Let's take the guesswork out of planning your trip with Travel Buddy's itinerary generator</b></span> -->
+        <span><b>Your go-to travel assistant</b></span>
+      </div>
+
+
+      <br>
+      <!-- <div class="container text-center">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form }}
+          <br>
+          <input type="submit" value="Submit">
+          <input type="submit"
+          onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
+          value="Cancel">
+        </form>
+      </div> -->
+      
+      <div class="container border-nish text-center form-nish">
+        <br>
+        <form action="" method="post">
+          {% csrf_token %}
+  
+          <div class="form-group">
+            {{ form.place.errors }}
+            {{ form.place }}
+          </div>
+          <br>
+  
+          <div class="form-group">
+            {{ form.duration.errors }}
+            {{ form.duration }}
+          </div>
+          <br>
+
+          <p id="error_message" class="text-center small-text"></p>
+  
+          <div class="form-group">
+            <input class="btn btn-dark" type="submit" value="Get Itinerary" id="submit_button" onclick="startTyping()">
+          </div>
+          <br>
+          <!-- <input type="submit"
+          onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
+          value="Cancel"> -->
+        </form>
+      </div>
+      
+      <br>
+      <div class="container text-center">
+        <span id="make-visible"></span>
+      </div>
+
+    </div>
+
+    <!-- <div class="container text-center">
+      <form action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </div>
+            <br>
+        {% endfor %}
+        <br>
+        <input type="submit" value="Submit">
+        <input type="submit"
+        onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
+        value="Cancel">
+      </form>
+    </div> -->
+    
+    
+    <div class="container text-center footer-nish">
+      <!-- <span>Let Travel Buddy take the guesswork out of planning your trip</span> -->
+      <span>Explore the world like a local with Travel Buddy</span>
+      <!-- <span>Say goodbye to travel planning stress with Travel Buddy</span> -->
+    </div>
+    
+
+  </div>
+
+  
+  
+  <script src="{% static 'askme/jsfile.js' %}"></script>
+</body>
+</html>
