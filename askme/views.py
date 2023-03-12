@@ -110,61 +110,66 @@ class ModelFormHome(View):
         ctx = {'form':form}
         return render(request, "askme/index.html", ctx)
     def post(self, request):
-        form = QForm(request.POST)
-        if not form.is_valid() :
-            ctx = {'form' : form}
-            return render(request, "askme/index.html", ctx)
-        # If there are no errors, we would use it to get an answer
-        place = request.POST.get("place")
-        duration = request.POST.get("duration")
+        try:
+            form = QForm(request.POST)
+            if not form.is_valid() :
+                ctx = {'form' : form}
+                return render(request, "askme/index.html", ctx)
+            # If there are no errors, we would use it to get an answer
+            place = request.POST.get("place")
+            duration = request.POST.get("duration")
 
-        query_set = Data.objects.filter(gpt_place=place.lower().strip(), gpt_duration=duration)
+            query_set = Data.objects.filter(gpt_place=place.lower().strip(), gpt_duration=duration)
 
-        if query_set:
-            # print("there is a query set")
-            # print(query_set[0])
-            # print(query_set[0].gpt_place)
-            # print(query_set[0].gpt_duration)
-            # print(query_set[0].gpt_result)
+            if query_set:
+                # print("there is a query set")
+                # print(query_set[0])
+                # print(query_set[0].gpt_place)
+                # print(query_set[0].gpt_duration)
+                # print(query_set[0].gpt_result)
 
-            # to make it seem like we're querying hahahah
-            time.sleep(5)
+                # to make it seem like we're querying hahahah
+                time.sleep(5)
 
-            heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-            ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
-            return render(request, "askme/post_ans.html", ctx)
-        
-        else:
-            test1 = "does the following place as it is exists on earth, tell either '1' for yes or '0' no: '"+place
-            test1_data = Ask(test1)
-            
-            if "1" in test1_data:
-
-                # prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning, afternoon and evening .then 'end the day with' a popular restaurant/local food places."
-                prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning, afternoon and evening ( the places covered in one day should not be repeated in anyother day ) .then 'end the day with' a popular restaurant/local food places."
-
-                data = Ask(prompt)
-
-                p2 = "generate a list of all place names,food and restaurant names in the same list in this format:'TAGS: ['place_name']' from the given text: "+data
-                data_p2 = Ask(p2)
-                
-                # print(data_p2)
-                clean_data = Clean_data2(data, data_p2)
                 heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
-
-                data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
-                data.save()
-
-                # # add session data
-                # request.session["again_place"] = place
-                # request.session["again_duration"] = duration
-
+                ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
                 return render(request, "askme/post_ans.html", ctx)
+            
             else:
-                data = "I'm sorry, but '"+place+"' is not a known place or city. Can you provide more information or clarify the name of the destination you would like me to create an itinerary for?"
-                ctx = {"data":data}
-                return render(request, "askme/post_ans.html", ctx)
+                test1 = "does the following place as it is exists on earth, tell either '1' for yes or '0' no: '"+place
+                test1_data = Ask(test1)
+                
+                if "1" in test1_data:
+
+                    # prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning, afternoon and evening .then 'end the day with' a popular restaurant/local food places."
+                    prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning, afternoon and evening ( the places covered in one day should not be repeated in anyother day ) .then 'end the day with' a popular restaurant/local food places."
+
+                    data = Ask(prompt)
+
+                    p2 = "generate a list of all place names,food and restaurant names in the same list in this format:'TAGS: ['place_name']' from the given text: "+data
+                    data_p2 = Ask(p2)
+                    
+                    # print(data_p2)
+                    clean_data = Clean_data2(data, data_p2)
+                    heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
+                    ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
+
+                    data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
+                    data.save()
+
+                    # # add session data
+                    # request.session["again_place"] = place
+                    # request.session["again_duration"] = duration
+
+                    return render(request, "askme/post_ans.html", ctx)
+                else:
+                    data = "I'm sorry, but '"+place+"' is not a known place or city. Can you provide more information or clarify the name of the destination you would like me to create an itinerary for?"
+                    ctx = {"data":data}
+                    return render(request, "askme/post_ans.html", ctx)
+        except:
+            data = "Something went wrong. Can you please try again."
+            ctx = {"data":data}
+            return render(request, "askme/error.html", ctx)
 
 class AskAgain(View):
     def get(self, request):
@@ -174,69 +179,78 @@ class AskAgain(View):
     def post(self, request):
 
         # print("in ASK AGAIN VIEW")
+        try:
+            place = request.POST.get("again_place")
+            duration = request.POST.get("again_duration")
+            
+            # print(place)
+            # print(duration)
 
-        place = request.POST.get("again_place")
-        duration = request.POST.get("again_duration")
-        
-        # print(place)
-        # print(duration)
+            # prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning and afternoon.then in the evening, 'end the day with' a popular restaurant/local food places. DO NOT REPEAT THE SAME PLACES TWICE."
+            prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning, afternoon and evening ( the places covered in one day should not be repeated in anyother day ) .then 'end the day with' a popular restaurant/local food places."
 
-        # prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning and afternoon.then in the evening, 'end the day with' a popular restaurant/local food places. DO NOT REPEAT THE SAME PLACES TWICE."
-        prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning, afternoon and evening ( the places covered in one day should not be repeated in anyother day ) .then 'end the day with' a popular restaurant/local food places."
+            # print(prompt)
 
-        # print(prompt)
+            data = Ask(prompt)
 
-        data = Ask(prompt)
+            p2 = "generate a list of all place names in this format:'TAGS: ['place_name']' from the given text: "+data
+            data_p2 = Ask(p2)
+                    
+            # print(data_p2)
+            clean_data = Clean_data2(data, data_p2)
+            heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
+            ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
 
-        p2 = "generate a list of all place names in this format:'TAGS: ['place_name']' from the given text: "+data
-        data_p2 = Ask(p2)
-                
-        # print(data_p2)
-        clean_data = Clean_data2(data, data_p2)
-        heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-        ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
+            # t = Data.objects.get(gpt_place= place, gpt_duration=duration)
+            # t.gpt_result = clean_data  # change field
+            # t.save()
 
-        # t = Data.objects.get(gpt_place= place, gpt_duration=duration)
-        # t.gpt_result = clean_data  # change field
-        # t.save()
+            updated_values = {'gpt_result': clean_data}
 
-        updated_values = {'gpt_result': clean_data}
+            obj, created = Data.objects.update_or_create(
+                gpt_place= place.lower().strip(), gpt_duration=duration,
+                defaults=updated_values
+            )
 
-        obj, created = Data.objects.update_or_create(
-            gpt_place= place.lower().strip(), gpt_duration=duration,
-            defaults=updated_values
-        )
+            # obj, created = Data.objects.get_or_create(gpt_place=place.lower().strip(), gpt_duration=duration, gpt_result=clean_data)
+            # obj.save()
 
-        # obj, created = Data.objects.get_or_create(gpt_place=place.lower().strip(), gpt_duration=duration, gpt_result=clean_data)
-        # obj.save()
+            # data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
+            # data.save()
 
-        # data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
-        # data.save()
-
-        return render(request, "askme/post_ans.html", ctx)
+            return render(request, "askme/post_ans.html", ctx)
+        except:
+            data = "Something went wrong. Can you please try again."
+            ctx = {"data":data}
+            return render(request, "askme/error.html", ctx)
 
 class FoodView(View):
     def post(self, request):
 
-        place = request.POST.get("food_place")
-        heading = "Food Recommendations for "+str(place).title()
-        query_set = Food.objects.filter(gpt_place=place.lower().strip())
+        try:
+            place = request.POST.get("food_place")
+            heading = "Food Recommendations for "+str(place).title()
+            query_set = Food.objects.filter(gpt_place=place.lower().strip())
 
-        if query_set:
-            ctx = {"data":query_set[0].gpt_result, "place":place, "heading":heading}
+            if query_set:
+                ctx = {"data":query_set[0].gpt_result, "place":place, "heading":heading}
+                return render(request, "askme/post_ans.html", ctx)
+
+            prompt = "give me popular restaurant recommendation in "+place+" and also the popular local foods"
+
+            # print(prompt)
+
+            data = Ask(prompt)
+            ctx = {"data":data, "place":place, "heading":heading}
+
+            data = Food.objects.create(gpt_place= place.lower().strip(), gpt_result= data)
+            data.save()
+
+            # data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
+            # data.save()
+
             return render(request, "askme/post_ans.html", ctx)
-
-        prompt = "give me popular restaurant recommendation in "+place+" and also the popular local foods"
-
-        # print(prompt)
-
-        data = Ask(prompt)
-        ctx = {"data":data, "place":place, "heading":heading}
-
-        data = Food.objects.create(gpt_place= place.lower().strip(), gpt_result= data)
-        data.save()
-
-        # data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
-        # data.save()
-
-        return render(request, "askme/post_ans.html", ctx)
+        except:
+            data = "Something went wrong. Can you please try again."
+            ctx = {"data":data}
+            return render(request, "askme/error.html", ctx)
