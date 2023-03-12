@@ -233,6 +233,7 @@ class FoodView(View):
             query_set = Food.objects.filter(gpt_place=place.lower().strip())
 
             if query_set:
+                time.sleep(5)
                 ctx = {"data":query_set[0].gpt_result, "place":place, "heading":heading}
                 return render(request, "askme/post_ans.html", ctx)
 
