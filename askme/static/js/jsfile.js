@@ -84,9 +84,10 @@ function startTyping() {
     });
   }
 
-  function startFoodTyping() {
+function startFoodTyping() {
     var text = "Building Food Recommendation... may take upto 10sec";
     typeWriter(text, 0, function() {
       console.log("Text has been typed out!");
     });
   }
+

@@ -20,3 +20,11 @@ class Food(models.Model):
 
     def __str__(self):
         return self.gpt_place
+
+class Statistics(models.Model):
+    stat_place = models.CharField(max_length=30)
+    stat_duration  = models.IntegerField(validators=[MinValueValidator(1, "Duration must be greater than 1 character")])
+    stat_count = models.IntegerField(validators=[MinValueValidator(1, "Duration must be greater than 1 character")])
+
+    def __str__(self):
+        return self.stat_place+"( "+str(self.stat_duration)+"-"+str(self.stat_count)+" )"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Queries, Data, Food
+from .models import Queries, Data, Food, Statistics
 
 # Register your models here.
 # admin.site.register(model_name)
@@ -7,3 +7,4 @@ from .models import Queries, Data, Food
 admin.site.register(Queries)
 admin.site.register(Data)
 admin.site.register(Food)
+admin.site.register(Statistics)

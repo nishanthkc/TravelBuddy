@@ -4,7 +4,7 @@ import csv
 
 def run():
     # with open('askme/data.csv') as file:
-    with open('askme/FINAL_DATA_2.csv') as file:
+    with open('askme/FINAL_DATA_GPT3.csv') as file:
         # reader = csv.reader(file)
         reader = csv.DictReader(file)
         next(reader)  # Advance past the header

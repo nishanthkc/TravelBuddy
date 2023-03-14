@@ -4,8 +4,7 @@ def Ask(prompt):
     # prompt = sys.argv[1]
     # prompt = "who are you" here we will insert the question
     # openai.api_key = "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"
-    # openai.api_key = "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" # nishanth.churchmal00
-    openai.api_key = "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" # thetravelbuddy.io@gmail.com
+    openai.api_key = "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" # nishanth.churchmal00
     completions = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -16,6 +15,43 @@ def Ask(prompt):
     )
     message = completions.choices[0].text
     return (message)
+
+def AskChat(prompt):
+    # prompt = sys.argv[1]
+    # prompt = "who are you" here we will insert the question
+    # openai.api_key = "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"
+    # openai.api_key = "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" # nishanth.churchmal00
+    openai.api_key = "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" #thetravelbuddy.io
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+    )
+
+
+    a = (completion.choices[0].message)["content"]
+    # message = completions.choices[0].text
+    return (a)
+
+def InteractChat(prev_msg, prompt):
+    # prompt = sys.argv[1]
+    # prompt = "who are you" here we will insert the question
+    # openai.api_key = "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"
+    openai.api_key = "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" # nishanth.churchmal00
+
+    msg_list =  [{"role": "assistant", "content":prev_msg }, {"role": "user", "content": prompt}]
+
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=msg_list
+    )
+
+
+    a = (completion.choices[0].message)["content"]
+    # message = completions.choices[0].text
+    return (a)
+
 
 def Clean_data(message):
     # message = message.replace("\n",". ")
@@ -60,6 +96,27 @@ def Clean_data2(message, str_list):
     print(message) 
 
     return (message)
+
+
+def Clean_list(message, str_list):
+
+    places = str_list.replace("\n","").strip(" ").replace("]","").replace("[","").replace("'","").split(', ')
+    print(places)
+
+    for i in places:
+        j=i.strip().replace(" ","+")
+        temp = '<a href="https://www.google.com/search?q='+j+'" target="_blank" >'+i+'</a>'
+        message = message.replace(i,temp)   
+
+    for i in ["Morning:","Afternoon:","Evening:","Day","End the day with"]:
+        if i in message:
+            message = message.replace(i,'<b>'+i+'</b>')
+
+    print(message) 
+
+    return (message)
+
+
 
 
     
