@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_list_or_404, redirect
 from django.views import View
-from .askAI import Ask, Clean_data, Clean_data2, AskChat, Clean_list, InteractChat
+from .askAI import Ask, Clean_data, Clean_data2, AskChat, Clean_list, InteractChat, InteractChat2
 from .forms import AskForm, QForm, FForm
 from .models import Queries, Data, Food, Statistics
 from django.urls import reverse
@@ -206,7 +206,8 @@ class ModelFormHome(View):
                 time.sleep(5)
 
                 heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
+                page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
                 return render(request, "askme/post_ans.html", ctx)
             
             else:
@@ -225,7 +226,8 @@ class ModelFormHome(View):
                     # print(data_p2)
                     clean_data = Clean_list(data, data_p2)
                     heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                    ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes'}
+                    page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                    ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
 
                     data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
                     data.save()

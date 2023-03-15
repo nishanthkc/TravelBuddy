@@ -54,6 +54,27 @@ def InteractChat(prev_msg, prompt):
     return (a)
 
 
+def InteractChat2(place, duration, user_inp):
+    # prompt = sys.argv[1]
+    # prompt = "who are you" here we will insert the question
+    # openai.api_key = "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"
+    # openai.api_key = "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" # nishanth.churchmal00
+    openai.api_key = "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" #thetravelbuddy.io
+    
+    prompt = "give me "+str(duration)+" days detailed itinerary for "+place+". format for each day (a place, about it and its specialty ) Morning:, Afternoon:, Evening:, End the day with:a dinner from a popular restaurant."
+    msg_list =  [{"role": "system", "content":"you are a professional and empathetic tourist guide. You take user requirements and suggest itineraries." }, 
+                {"role": "user", "content": "User input: '"+user_inp+"'."+prompt}]
+
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=msg_list
+    )
+    
+    a = (completion.choices[0].message)["content"]
+    # message = completions.choices[0].text
+    return (a)
+
+
 def Clean_data(message):
     # message = message.replace("\n",". ")
     

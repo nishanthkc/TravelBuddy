@@ -91,3 +91,9 @@ function startFoodTyping() {
     });
   }
 
+function startWaiting() {
+    var text = "Building a Personalized Itinerary just for you. Please be patient while we revolutionalize the way you travel with our AI-powered platform";
+    typeWriter(text, 0, function() {
+      console.log("Text has been typed out!");
+    });
+  }
