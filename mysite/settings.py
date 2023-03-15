@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-bo!d2$+x#&37)_*nu!68ldb!=-^a0bh1o1ba^7#btowg%+_!jf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'thetravelbuddy.io', '3.140.140.209']
 
 
 # Application definition
