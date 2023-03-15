@@ -38,7 +38,8 @@ def InteractChat(prev_msg, prompt):
     # prompt = sys.argv[1]
     # prompt = "who are you" here we will insert the question
     # openai.api_key = "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"
-    openai.api_key = "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" # nishanth.churchmal00
+    # openai.api_key = "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" # nishanth.churchmal00
+    openai.api_key = "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" #thetravelbuddy.io
 
     msg_list =  [{"role": "assistant", "content":prev_msg }, {"role": "user", "content": prompt}]
 
