@@ -31,7 +31,7 @@ class Statistics(models.Model):
     def __str__(self):
         return self.stat_place+"( "+str(self.stat_duration)+"-"+str(self.stat_count)+" )"
 
-class Searches(models.Model):
+class Search_history(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     search_place =models.CharField(max_length=30)
     search_duration  = models.IntegerField()

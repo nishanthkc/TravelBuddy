@@ -2,7 +2,7 @@ from django.shortcuts import render, get_list_or_404, redirect
 from django.views import View
 from .askAI import Ask, Clean_data, Clean_data2, AskChat, Clean_list, InteractChat, InteractChat2
 from .forms import AskForm, QForm, FForm
-from .models import Queries, Data, Food, Statistics, Searches
+from .models import Queries, Data, Food, Statistics, Search_history
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .helpers import find_closest_pair, generate_urls
@@ -211,7 +211,7 @@ class ModelFormHome(View):
                 heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
                 page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
                 if request.user.is_authenticated:
-                    Searches.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+query_set[0].gpt_result)
+                    Search_history.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+query_set[0].gpt_result)
                 ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
                 return render(request, "askme/post_ans.html", ctx)
             
@@ -238,7 +238,7 @@ class ModelFormHome(View):
                     data.save()
 
                     if request.user.is_authenticated:
-                        Searches.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+clean_data)
+                        Search_history.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+clean_data)
 
                     # # add session data
                     # request.session["again_place"] = place
@@ -404,9 +404,9 @@ class Chat(View):
         
         
         if request.user.is_authenticated:
-            latest_search = Searches.objects.filter(user=request.user, search_place=place,search_duration=duration)[0]
+            latest_search = Search_history.objects.filter(user=request.user, search_place=place,search_duration=duration)[0]
             updated_values = {'search_query': "<h2><b>"+heading+"</b></h2>"+prev_prompt+"<h2><b>"+heading2+"</b></h2>"+clean_data}
-            obj, created = Searches.objects.update_or_create(
+            obj, created = Search_history.objects.update_or_create(
                     pk =latest_search.id, user=request.user, search_place=place,search_duration=duration,
                     defaults=updated_values
                 )
@@ -435,13 +435,13 @@ class Chat(View):
 
 class ItinerariesView(LoginRequiredMixin, View):
     def get(self, request):
-        search_results = Searches.objects.filter(user=request.user)
+        search_results = Search_history.objects.filter(user=request.user)
         ctx={'itineraries':search_results}
         return render(request, 'askme/itineraries.html',ctx)
 
 class SingleItineraryView(LoginRequiredMixin, View):
     def get(self, request, i_id):
-        search_results = Searches.objects.get(pk=i_id)
+        search_results = Search_history.objects.get(pk=i_id)
         ctx={'itinerary':search_results}
         return render(request, 'askme/single_itinerary.html',ctx)
 
