@@ -37,6 +37,26 @@
         </div>
     </nav>
 
+    {% if user.is_authenticated %}
+
+        {% if user.socialaccount_set.all %}
+            {% for account in user.socialaccount_set.all %}
+                {% if account.provider == "google" %}
+                    {% if account.extra_data.picture %}
+                    <div class="dropdown">
+                        <img src="{{ account.extra_data.picture }}" alt="Profile Picture"  class="profile-pic dropdown-toggle" data-bs-toggle="dropdown">        
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'askme:itineraries' %}">My Itineraries</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+    {% else %}
+
 
     {% if data %}
     <div class="container">
