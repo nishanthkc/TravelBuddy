@@ -19,5 +19,9 @@ urlpatterns = [
     path('trending/', views.MostSearched.as_view(), name="most_searched"),
     path('places/<str:place_name>/', views.PlaceView.as_view(), name="place_view"),
     path('places/<str:place_name>/<int:d>', views.PlaceDayView.as_view(), name="place_day_view"),
+    path('my-itineraries/', views.ItinerariesView.as_view(), name="itineraries"),
+    path('my-itineraries/<int:i_id>', views.SingleItineraryView.as_view(), name="single_itinerary"),
+    path('flights/', views.flights, name="flights"),
+    path('hotel/', views.hotel, name="hotel"),
 ]
  

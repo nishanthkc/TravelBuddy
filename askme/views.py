@@ -2,13 +2,16 @@ from django.shortcuts import render, get_list_or_404, redirect
 from django.views import View
 from .askAI import Ask, Clean_data, Clean_data2, AskChat, Clean_list, InteractChat, InteractChat2
 from .forms import AskForm, QForm, FForm
-from .models import Queries, Data, Food, Statistics
+from .models import Queries, Data, Food, Statistics, Searches
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .helpers import find_closest_pair, generate_urls
 
 from django.db.models import Sum, Count
 
 import json
 import requests
+from datetime import datetime, timedelta
 from urllib.request import urlopen
 
 import time
@@ -206,7 +209,9 @@ class ModelFormHome(View):
                 time.sleep(5)
 
                 heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                page_link = ("http://ec2-3-140-140-209.us-east-2.compute.amazonaws.com:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                if request.user.is_authenticated:
+                    Searches.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+query_set[0].gpt_result)
                 ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
                 return render(request, "askme/post_ans.html", ctx)
             
@@ -226,11 +231,14 @@ class ModelFormHome(View):
                     # print(data_p2)
                     clean_data = Clean_list(data, data_p2)
                     heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                    page_link = ("http://ec2-3-140-140-209.us-east-2.compute.amazonaws.com:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                    page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
                     ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
 
                     data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
                     data.save()
+
+                    if request.user.is_authenticated:
+                        Searches.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+clean_data)
 
                     # # add session data
                     # request.session["again_place"] = place
@@ -375,8 +383,8 @@ class Chat(View):
     def post(self, request):
         place = request.POST.get("again_place")
         duration = request.POST.get("again_duration")
-
-        change_prompt = "personalize itinerary by "+request.POST.get("personalize_prompt")
+        change_prompt = request.POST.get("personalize_prompt")
+        
         t = Data.objects.get(gpt_place= place.lower().strip(), gpt_duration=duration)
         prev_prompt = t.gpt_result
         # print(place)
@@ -384,7 +392,7 @@ class Chat(View):
 
         # prompt = "act as a tour guide and give a "+duration+" days guide to visit "+place+" as (a place, breifly about it and what a tourist can do there) for morning and afternoon.then in the evening, 'end the day with' a popular restaurant/local food places. DO NOT REPEAT THE SAME PLACES TWICE."
         # prompt = "give me "+duration+" day itinerary for "+place+". format for each day (a place, about it and its specialty ) Morning:, Afternoon:, Evening:, End the day with:a dinner from a popular restaurant."
-        data = InteractChat(prev_prompt, change_prompt)
+        data = InteractChat2(place, duration, user_inp=change_prompt)
 
         p2 = "make a python list of all the places in the format:['place'] in the below text:"+data
         data_p2 = AskChat(p2)
@@ -393,6 +401,16 @@ class Chat(View):
         clean_data = Clean_list(data, data_p2)
         heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
         heading2 = "Here's your "+str(duration)+"-days Personalized itinerary for "+str(place).title()
+        
+        
+        if request.user.is_authenticated:
+            latest_search = Searches.objects.filter(user=request.user, search_place=place,search_duration=duration)[0]
+            updated_values = {'search_query': "<h2><b>"+heading+"</b></h2>"+prev_prompt+"<h2><b>"+heading2+"</b></h2>"+clean_data}
+            obj, created = Searches.objects.update_or_create(
+                    pk =latest_search.id, user=request.user, search_place=place,search_duration=duration,
+                    defaults=updated_values
+                )
+
         ctx = {"data":prev_prompt, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'heading2':heading2, 'personalised':clean_data}
 
         # t = Data.objects.get(gpt_place= place, gpt_duration=duration)
@@ -413,3 +431,33 @@ class Chat(View):
         # data.save()
 
         return render(request, "askme/post_ans.html", ctx)
+
+
+class ItinerariesView(LoginRequiredMixin, View):
+    def get(self, request):
+        search_results = Searches.objects.filter(user=request.user)
+        ctx={'itineraries':search_results}
+        return render(request, 'askme/itineraries.html',ctx)
+
+class SingleItineraryView(LoginRequiredMixin, View):
+    def get(self, request, i_id):
+        search_results = Searches.objects.get(pk=i_id)
+        ctx={'itinerary':search_results}
+        return render(request, 'askme/single_itinerary.html',ctx)
+
+
+def flights(request):
+    latitude = request.POST.get('latitude')
+    longitude = request.POST.get('longitude')
+    dest = request.POST.get('destination')
+    (hotel,flight) = generate_urls(find_closest_pair(latitude,longitude)[0],dest.lower().strip())
+    return redirect(flight)
+
+def hotel(request):
+    dest = request.POST.get('destination')
+    today = datetime.today()
+    today_date = str(today.year)+'-'+str(today.month)+'-'+str(today.day)
+    tomorrow = today + timedelta(days=1)
+    tomorrow_date = str(tomorrow.year)+'-'+str(tomorrow.month)+'-'+str(tomorrow.day)
+    hotel = "https://www.expedia.co.in/Hotel-Search?destination={}&selected=&d1={}&startDate={}&d2={}&endDate={}&adults=2".format(str(dest), today_date, today_date, tomorrow_date, tomorrow_date)
+    return redirect(hotel)

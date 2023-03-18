@@ -1,3 +1,4 @@
+{% load socialaccount %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -27,7 +28,6 @@
     </style>
 </head>
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'askme:askme_mform' %}">Travel Buddy</a>
@@ -40,7 +40,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li> -->
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'askme:askme_foodform' %}">Food Recommendations</a>
+                <a class="nav-link" href="{% url 'askme:askme_foodform' %}">Food Recommendations</a>
               </li>
               <!-- <li class="nav-item">
                 <a class="nav-link" href="#">Trip Advisor</a>
@@ -50,8 +50,7 @@
           </div>
         </div>
     </nav>
-
-
+    
     {% if user.is_authenticated %}
 
         {% if user.socialaccount_set.all %}
@@ -71,46 +70,43 @@
         {% endif %}
 
     {% else %}
-            
+        
     {% endif %}
 
 
 
-    {% if data %}
+
+    
+    
     <div class="container">
         <div class="container text-center">
             <h1><b>Travel Buddy</b></h1>
         </div>
-        {% if heading %}
-            <div class="container text-center">
-                <h2><b>{{ heading }}</b></h2>
-            </div>
-        {% endif %}
+        
         <div class="container text-justify">
             <div class="row">
                 <div class="col">
                     {% autoescape off %}
-                    {{ data|linebreaks }}
+                    {{ itinerary.search_query|linebreaks }}
                     {% endautoescape %}
                 </div>
             </div>
 
             <br>
+            
+            <br>
             <input type="submit"
-                onclick="window.location='{% url 'askme:askme_foodform' %}' ; return false;"
+                onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
                 value="Search Again" class="btn btn-dark">
                 <br>
                 <br>
 
-
-                
         </div>
-    
+        
     </div>
-    {% endif %}
 
 
-    <script src="{% static 'js/foodjs.js' %}"></script>
+    <script src="{% static 'js/jsfile.js' %}"></script>
 </body>
 </html>
 

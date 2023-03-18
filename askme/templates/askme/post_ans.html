@@ -1,3 +1,4 @@
+{% load socialaccount %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -11,6 +12,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <style>
+        .profile-pic {
+          border-radius: 50%;
+          width: 2rem;
+          height: 2rem;
+        }
+    
+        .dropdown {
+          position: fixed;
+          top: 4rem;
+          right: 1rem;
+          
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -36,7 +51,31 @@
         </div>
     </nav>
     
-    
+    {% if user.is_authenticated %}
+
+        {% if user.socialaccount_set.all %}
+            {% for account in user.socialaccount_set.all %}
+                {% if account.provider == "google" %}
+                    {% if account.extra_data.picture %}
+                    <div class="dropdown">
+                        <img src="{{ account.extra_data.picture }}" alt="Profile Picture"  class="profile-pic dropdown-toggle" data-bs-toggle="dropdown">        
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'askme:itineraries' %}">My Itineraries</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+    {% else %}
+        
+    {% endif %}
+
+
+
+
     
     
     {% if data %}
@@ -49,6 +88,56 @@
                 <h2><b>{{ heading }}</b></h2>
             </div>
         {% endif %}
+
+
+
+
+        <div class="container text-center">
+            <form id="location-form" method="POST" action="{% url 'askme:flights' %}">
+                {% csrf_token %}
+                <input type="hidden" name="latitude" id="latitude-input" value="">
+                <input type="hidden" name="longitude" id="longitude-input" value="">
+                <input type="hidden" name="destination" id="longitude-input" value="{{ place }}">
+            </form>
+
+            <form id="hotel-form" method="POST" action="{% url 'askme:hotel' %}">
+                {% csrf_token %}
+                <input type="hidden" name="destination" id="longitude-input" value="{{ place }}">
+            </form>
+
+            <p>Let's start your trip by booking <a id="location-link" href="#">Flights</a> and <a id="hotel-link" href="#">Hotels</a></p>
+        </div>
+
+        <script>
+            function getLocation() {
+              if (window.navigator.geolocation) {
+                // Geolocation available
+                window.navigator.geolocation.getCurrentPosition(
+                  function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const latitudeInput = document.getElementById('latitude-input');
+                    const longitudeInput = document.getElementById('longitude-input');
+                    latitudeInput.value = latitude;
+                    longitudeInput.value = longitude;
+                    document.getElementById('location-form').submit();
+                  },
+                  console.log
+                );
+              }
+            }
+            function getHotel() {
+                document.getElementById('hotel-form').submit();
+            }
+          
+            document.getElementById('location-link').addEventListener('click', getLocation);
+            document.getElementById('hotel-link').addEventListener('click', getHotel);
+        </script>
+
+
+
+        
+
         <div class="container text-justify">
             <div class="row">
                 <div class="col">
@@ -110,18 +199,9 @@
                 <br>
                 {% if heading %}
                     {% if extra_button %}
-                        <!-- <form action="{% url 'askme:askme_again' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
-                            <input type="hidden" value="{{ duration }}" name="again_duration" id="again_duration">
-                            <span>
-                                Didn't like it?
-                                <input type="submit" value="Get another itinerary" class="btn btn-dark" onclick="startTyping()">
-                            </span>
-                        </form> -->
-
+                    {% if user.is_authenticated %}
+                        
                         <br>
-
                         <form action="{% url 'askme:askme_chat' %}#heading2" method="post">
                             {% csrf_token %}
                             <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
@@ -131,9 +211,33 @@
                                 <div class="input-group mb-3">
                                     <input type="text" name="personalize_prompt" class="form-control" placeholder="Ex: make my trip adventurous" aria-label="Ex: make my trip adventurous" aria-describedby="button-addon2">
                                     <button class="btn btn-outline-secondary text-white btn-dark " type="submit" id="button-addon2" onclick="startWaiting()">Go</button>
+                                    <script>
+                                        function startWaiting() {
+                                            var text = "Building a Personalized Itinerary just for you. Please be patient while we revolutionalize the way you travel with our AI-powered platform";
+                                            typeWriter(text, 0, function() {
+                                            console.log("Text has been typed out!");
+                                            });
+                                        }
+                                    </script>
                                 </div>
                             </span>
                         </form>
+
+                    {% else %}
+                    
+                        <form action="{% url 'askme:askme_again' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
+                            <input type="hidden" value="{{ duration }}" name="again_duration" id="again_duration">
+                            <span>
+                                Didn't like it?
+                                <input type="submit" value="Get another itinerary" class="btn btn-dark" onclick="startTyping()">
+                            </span>
+                        </form>
+                        <br>
+                        <p>Sign-up with <a href="{% provider_login_url 'google' %}">Google</a> for Premium services like Personalization</p>
+
+                    {% endif %}
 
                         <br>
 
