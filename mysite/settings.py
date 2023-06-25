@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google', # for Google OAuth 2.0
+
+    # to use ssl (https) use this
+    "sslserver",
 ]
 
 MIDDLEWARE = [
