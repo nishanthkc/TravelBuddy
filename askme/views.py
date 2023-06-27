@@ -6,6 +6,7 @@ from .models import Queries, Data, Food, Statistics, Search_history
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .helpers import find_closest_pair, generate_urls
+from django.http import HttpResponse
 
 from django.db.models import Sum, Count
 
@@ -437,6 +438,7 @@ class ItinerariesView(LoginRequiredMixin, View):
     def get(self, request):
         search_results = Search_history.objects.filter(user=request.user)
         ctx={'itineraries':search_results}
+        print(ctx)
         return render(request, 'askme/itineraries.html',ctx)
 
 class SingleItineraryView(LoginRequiredMixin, View):
@@ -461,3 +463,7 @@ def hotel(request):
     tomorrow_date = str(tomorrow.year)+'-'+str(tomorrow.month)+'-'+str(tomorrow.day)
     hotel = "https://www.expedia.co.in/Hotel-Search?destination={}&selected=&d1={}&startDate={}&d2={}&endDate={}&adults=2".format(str(dest), today_date, today_date, tomorrow_date, tomorrow_date)
     return redirect(hotel)
+
+class Health(View):
+    def get(self, rquest):
+        return HttpResponse(status=200)

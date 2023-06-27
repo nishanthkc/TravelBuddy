@@ -23,5 +23,7 @@ urlpatterns = [
     path('my-itineraries/<int:i_id>', views.SingleItineraryView.as_view(), name="single_itinerary"),
     path('flights/', views.flights, name="flights"),
     path('hotel/', views.hotel, name="hotel"),
+    
+    path('health/', views.Health.as_view(), name="health"), #for health time out
 ]
  

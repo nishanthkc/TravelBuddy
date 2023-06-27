@@ -49,6 +49,9 @@ INSTALLED_APPS = [
 
     # to use ssl (https) use this
     "sslserver",
+
+    # for csrf 403 while in prod
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -95,7 +99,8 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'askme',
+        # 'NAME': 'askme',
+        'NAME': 'travelbuddy',
         'USER': 'root',
         'PASSWORD': 'root1234',
         # 'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
@@ -180,3 +185,6 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+
+CSRF_TRUSTED_ORIGINS = ['https://thetravelbuddy.io']
