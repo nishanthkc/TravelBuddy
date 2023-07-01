@@ -14,7 +14,7 @@ urlpatterns = [
     path('', views.ModelFormHome.as_view(), name="askme_mform"),
     path('chat/', views.Chat.as_view(), name="askme_chat"),
     path('recommend-food/', views.FoodRecommender.as_view(), name="askme_foodform"),
-    path('lol/', views.AskAgain.as_view(), name="askme_again"),
+    path('reiterate/', views.AskAgain.as_view(), name="askme_again"),
     path('food/', views.FoodView.as_view(), name="askme_food"),
     path('trending/', views.MostSearched.as_view(), name="most_searched"),
     path('places/<str:place_name>/', views.PlaceView.as_view(), name="place_view"),
@@ -22,7 +22,7 @@ urlpatterns = [
     path('my-itineraries/', views.ItinerariesView.as_view(), name="itineraries"),
     path('my-itineraries/<int:i_id>', views.SingleItineraryView.as_view(), name="single_itinerary"),
     path('flights/', views.flights, name="flights"),
-    path('hotel/', views.hotel, name="hotel"),
+    path('hotel/<str:place>/', views.hotel, name="hotel"),
     
     path('health/', views.Health.as_view(), name="health"), #for health time out
 ]

@@ -452,16 +452,17 @@ def flights(request):
     latitude = request.POST.get('latitude')
     longitude = request.POST.get('longitude')
     dest = request.POST.get('destination')
-    (hotel,flight) = generate_urls(find_closest_pair(latitude,longitude)[0],dest.lower().strip())
+    pair = find_closest_pair(latitude, longitude,dest.lower().strip())
+    flight = generate_urls(pair[0], pair[1])
+    # (hotel,flight) = generate_urls(find_closest_pair(latitude,longitude)[0],dest.lower().strip())
     return redirect(flight)
 
-def hotel(request):
-    dest = request.POST.get('destination')
+def hotel(request,place):
     today = datetime.today()
     today_date = str(today.year)+'-'+str(today.month)+'-'+str(today.day)
     tomorrow = today + timedelta(days=1)
     tomorrow_date = str(tomorrow.year)+'-'+str(tomorrow.month)+'-'+str(tomorrow.day)
-    hotel = "https://www.expedia.co.in/Hotel-Search?destination={}&selected=&d1={}&startDate={}&d2={}&endDate={}&adults=2".format(str(dest), today_date, today_date, tomorrow_date, tomorrow_date)
+    hotel = "https://www.expedia.co.in/Hotel-Search?destination={}&selected=&d1={}&startDate={}&d2={}&endDate={}&adults=2".format(str(place), today_date, today_date, tomorrow_date, tomorrow_date)
     return redirect(hotel)
 
 class Health(View):
