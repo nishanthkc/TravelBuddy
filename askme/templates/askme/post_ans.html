@@ -184,7 +184,7 @@
                     
                     <!-- <br> -->
                     <div class="row">
-                        <form action="{% url 'askme:askme_chat' %}#heading2" method="post">
+                        <form action="{% url 'askme:askme_chat' %}#heading2" method="post" id="get_another_itinerary_form">
                             {% csrf_token %}
                             <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
                             <input type="hidden" value="{{ duration }}" name="again_duration" id="again_duration">
@@ -192,15 +192,15 @@
                                 Didn't like it? How can I make it better?
                                 <div class="input-group mb-3">
                                     <input type="text" name="personalize_prompt" class="form-control" placeholder="Ex: make my trip adventurous" aria-label="Ex: make my trip adventurous" aria-describedby="button-addon2">
-                                    <button class="btn btn-outline-secondary text-white btn-dark " type="submit" id="button-addon2" onclick="startWaiting()">Go</button>
-                                    <script>
+                                    <button class="btn btn-outline-secondary text-white btn-dark " type="submit" id="button-addon2 submit_button" onclick="startWaiting()">Go</button>
+                                    <!-- <script>
                                             function startWaiting() {
                                                 var text = "Building a Personalized Itinerary just for you. Please be patient while we revolutionalize the way you travel with our AI-powered platform";
                                                 typeWriter(text, 0, function() {
                                                 console.log("Text has been typed out!");
                                                 });
                                             }
-                                    </script>
+                                    </script> -->
                                 </div>
                             </span>
                         </form>
@@ -210,13 +210,14 @@
                     {% else %}
                         
                         <div class="row">
-                            <form action="{% url 'askme:askme_again' %}" method="post">
+                            <form action="{% url 'askme:askme_again' %}" method="post" id="get_itinerary_form">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
                                 <input type="hidden" value="{{ duration }}" name="again_duration" id="again_duration">
                                 <span>
                                     Didn't like it?
-                                    <input type="submit" value="Get another itinerary" class="btn btn-dark" onclick="startTyping()">
+                                    <!-- BUGBUGBUGBUGBUGBUGBUGBUG -->
+                                    <input type="submit" value="Get another itinerary" class="btn btn-dark" id="submit_button" onclick="startTyping()"> 
                                 </span>
                             </form>
                         </div>
@@ -238,11 +239,11 @@
                         <br>
                         
                         <div class="row">
-                            <form action="{% url 'askme:askme_food' %}" method="post">
+                            <form action="{% url 'askme:askme_food' %}" method="post" id="get_food_rec_form">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ place }}" name="food_place" id="food_place">
                                 <p>
-                                    <input type="submit" src value="Get Food Recommendations" class="btn btn-dark" onclick="startFoodTyping()">
+                                    <input type="submit" src value="Get Food Recommendations" class="btn btn-dark" id="submit_button" onclick="startFoodTyping()">
                                 </p>
                             </form>
                         </div>
