@@ -25,5 +25,6 @@ urlpatterns = [
     path('hotel/<str:place>/', views.hotel, name="hotel"),
     
     path('health/', views.Health.as_view(), name="health"), #for health time out
+    path('privacy/', views.Privacy.as_view(), name="privacy"), #for privacy policies
 ]
  

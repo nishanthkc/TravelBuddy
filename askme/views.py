@@ -465,6 +465,17 @@ def hotel(request,place):
     hotel = "https://www.expedia.co.in/Hotel-Search?destination={}&selected=&d1={}&startDate={}&d2={}&endDate={}&adults=2".format(str(place), today_date, today_date, tomorrow_date, tomorrow_date)
     return redirect(hotel)
 
+
+
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
 class Health(View):
-    def get(self, rquest):
+    def get(self, request):
         return HttpResponse(status=200)
+
+
+class Privacy(View):
+    def get(self, request):
+        return render(request, 'askme/privacy.html')
