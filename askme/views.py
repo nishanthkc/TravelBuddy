@@ -210,7 +210,7 @@ class ModelFormHome(View):
                 time.sleep(5)
 
                 heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                page_link = ("https://thetravelbuddy.io/places/{}/{}".format(place,duration)).replace(" ","")
                 if request.user.is_authenticated:
                     Search_history.objects.create(user=request.user, search_place=place,search_duration=duration,search_query="<h2><b>"+heading+"</b></h2>"+query_set[0].gpt_result)
                 ctx = {"data":query_set[0].gpt_result, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
@@ -232,7 +232,7 @@ class ModelFormHome(View):
                     # print(data_p2)
                     clean_data = Clean_list(data, data_p2)
                     heading = "Here's your "+str(duration)+"-days itinerary for "+str(place).title()
-                    page_link = ("http://127.0.0.1:8000/places/{}/{}".format(place,duration)).replace(" ","")
+                    page_link = ("https://thetravelbuddy.io/places/{}/{}".format(place,duration)).replace(" ","")
                     ctx = {"data":clean_data, "place":place, "duration":duration, "heading":heading, "extra_button":'yes', 'page_link':page_link}
 
                     data = Data.objects.create(gpt_place= place.lower().strip(), gpt_duration=duration, gpt_result= clean_data)
