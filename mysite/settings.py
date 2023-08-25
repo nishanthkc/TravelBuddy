@@ -193,3 +193,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 CSRF_TRUSTED_ORIGINS = ['https://thetravelbuddy.io']
+
+# Adding the following in production settings.py fixed the problem for me:
+# YOU MISS THIS AND YOU'RE FUCKED BY GOOGLE AUTH
+
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
