@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+
+    # For sites portion in admin page
+    'django.contrib.sites',
+
+    # For app
     'askme.apps.AskmeConfig',
 
     # Add the following django-allauth apps
