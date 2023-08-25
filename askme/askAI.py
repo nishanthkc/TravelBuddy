@@ -4,8 +4,8 @@ def Ask(prompt):
     # prompt = sys.argv[1]
     # prompt = "who are you" here we will insert the question
     # openai.api_key = "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"
-    openai.api_key = "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" # nishanth.churchmal00
-    completions = openai.Completion.create(
+    # openai.api_key = "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" # nishanth.churchmal00
+    co  openai.api_key = "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" #thetravelbuddy.io V2mpletions = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
         max_tokens=1024,
@@ -21,8 +21,8 @@ def AskChat(prompt):
     # prompt = "who are you" here we will insert the question
     # openai.api_key = "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"
     # openai.api_key = "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" # nishanth.churchmal00
-    openai.api_key = "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" #thetravelbuddy.io
-    completion = openai.ChatCompletion.create(
+    # openai.api_key = "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" #thetravelbuddy.io
+    co  openai.api_key = "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" #thetravelbuddy.io V2mpletion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
         {"role": "user", "content": prompt}
@@ -39,8 +39,8 @@ def InteractChat(prev_msg, prompt):
     # prompt = "who are you" here we will insert the question
     # openai.api_key = "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"
     # openai.api_key = "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" # nishanth.churchmal00
-    openai.api_key = "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" #thetravelbuddy.io
-
+    # openai.api_key = "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" #thetravelbuddy.io
+    openai.api_key = "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" #thetravelbuddy.io V2
     msg_list =  [{"role": "assistant", "content":prev_msg }, {"role": "user", "content": prompt}]
 
     completion = openai.ChatCompletion.create(
@@ -59,8 +59,8 @@ def InteractChat2(place, duration, user_inp):
     # prompt = "who are you" here we will insert the question
     # openai.api_key = "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"
     # openai.api_key = "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" # nishanth.churchmal00
-    openai.api_key = "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" #thetravelbuddy.io
-    
+    # openai.api_key = "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" #thetravelbuddy.io
+        openai.api_key = "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" #thetravelbuddy.io V2
     prompt = "give me "+str(duration)+" days detailed itinerary for "+place+". format for each day (a place, about it and its specialty ) Morning:, Afternoon:, Evening:, End the day with:a dinner from a popular restaurant."
     msg_list =  [{"role": "system", "content":"you are a professional and empathetic tourist guide. You take user requirements and suggest itineraries." }, 
                 {"role": "user", "content": "User input: '"+user_inp+"'."+prompt}]
