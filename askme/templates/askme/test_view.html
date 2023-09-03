@@ -1,0 +1,65 @@
+{% load socialaccount %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Page</h1>
+        <div id="chat_history"></div>
+        <form id="chat-form">
+            {% csrf_token %}
+            <input type="text" id="user_input">
+            <button id="ajaxButton" type="submit">Submit</button>
+        </form>
+        {% autoescape off %}
+            {% if data %}
+                <h1>{{ data|linebreaks }}</h1>
+            {% else %}
+            {% endif %}
+        {% endautoescape %}
+        
+    </div>
+
+    <script src="{% static 'js/jsfile.js' %}"></script>
+
+    <script>
+    // Attach a click event handler to the button
+
+    $(document).ready(function() {
+        var chat_history = ""
+        
+        $("#chat-form").submit(function(event) {
+            event.preventDefault()
+
+            var user_input = $('#user_input').val()
+            $('#user_input').val("")
+
+            chat_history += "<div class='user-message'>" + user_input + "</div>"
+
+            $.ajax({
+                type:"POST",
+                url:"{% url 'askme:chatbot' %}",
+                data:{'user_input':user_input, 'chat_history':chat_history, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function(response) {
+                    chat_history+= ("<div class='bot-response'>" + response.bot_response + "</div>")
+                    $("#chat_history").html(chat_history)
+                    console.log(chat_history)
+                },
+                error: function(error) {
+                    console.error("Error: ".error)
+                }
+            })
+
+        })
+
+    })
+
+
+    
+    </script>
+
+</body>
+</html>

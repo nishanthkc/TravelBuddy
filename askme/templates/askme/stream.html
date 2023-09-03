@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Stream Example</title>
+</head>
+<body>
+    <h1>Streaming Example</h1>
+    <div id="streamed-data"></div>
+
+    <script>
+        const streamedDataDiv = document.getElementById('streamed-data');
+        const eventSource = new EventSource('{% url "askme:sse" %}');
+
+        eventSource.addEventListener('message', function(event) {
+            console.log('writing')
+            const newChunk = document.createElement('div');
+            newChunk.textContent = event.data;
+            streamedDataDiv.appendChild(newChunk);
+        });
+    </script>
+</body>
+</html>

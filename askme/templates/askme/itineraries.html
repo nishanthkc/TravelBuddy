@@ -8,7 +8,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'askme:askme_mform' %}">Travel Buddy</a>
+      <a class="navbar-brand" href="{% url 'askme:home' %}">Travel Buddy</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -18,7 +18,7 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li> -->
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'askme:askme_foodform' %}">Food Recommendations</a>
+            <a class="nav-link" href="{% url 'askme:food' %}">Food Recommendations</a>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link" href="#">Trip Advisor</a>
@@ -52,76 +52,45 @@
         
   {% endif %}
 
+  <div class="container">
 
-  <div class="container cont-center test">
-    <div class="row container text-center">
-        <h1><b>Travel Buddy</b></h1>
-        <!-- <span><b>Your personal travel assistant</b></span> -->
-        <!-- <span><b>Let Travel Buddy take the guesswork out of planning your trip</b></span> -->
-        <!-- <span><b>Let's take the guesswork out of planning your trip with Travel Buddy's itinerary generator</b></span> -->
-        <span><b>Your Itineraries</b></span>
+    <div class="container text-center">
+      <h1><b>Travel Buddy</b></h1>
+      <h2>Your Itineraries</h2>
     </div>
-    <div class="container cont-center">
-      
 
+    <br>
 
-      <br>
-      <!-- <div class="container text-center">
-        <form action="" method="post">
-          {% csrf_token %}
-          {{ form }}
-          <br>
-          <input type="submit" value="Submit">
-          <input type="submit"
-          onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
-          value="Cancel">
-        </form>
-      </div> -->
-      {% for iti in itineraries %}
-        <div class="container border-nish text-center form-nish">
-            <br>
-            <a href="{% url 'askme:single_itinerary' iti.id %}">
-                <p>{{ iti.search_place|title }} itinerary for {{ iti.search_duration }}-days</p>
-            </a>
-            <br>
+    <div class="container text-justify">
+
+      {% if none %}
+      <div class="container" style="overflow-y: scroll;">
+        <div class="text-center">
+          <b>No Itineraries yet</b>
         </div>
-        <br>
-      {% endfor %}
-
-      <div class="container text-center">
-        <span id="make-visible"></span>
       </div>
-
-      <!-- USE THIS IN NEXT RELEASE -->
-      <!-- <div class="container text-center">        
-        <span>Checkout the most Trending destinations <a href="{% url 'askme:most_searched' %}">here</a></span>
-      </div> -->
+      {% else %}
+        <div class="container" style="overflow-y: scroll;">
+          <div class="row row-cols-1 row-cols-md-2 g-4">
+              {% for place, heading, piti_id in itineraries %}
+                  <div class="col">
+                      <div class="card">
+                          <div class="card-body">
+                              <h5 class="card-title">{{ place|title }}</h5>
+                              <p class="card-text">{{ heading }}</p>
+                              <a href="{% url 'askme:goto_personal_itinerary_section' piti_id %}" class="btn btn-dark">Go here</a>
+                          </div>
+                      </div>
+                  </div>
+              {% endfor %}
+          </div>
+        </div>
+      {% endif %}
 
     </div>
 
-    <!-- <div class="container text-center">
-      <form action="" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="fieldWrapper">
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-            </div>
-            <br>
-        {% endfor %}
-        <br>
-        <input type="submit" value="Submit">
-        <input type="submit"
-        onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
-        value="Cancel">
-      </form>
-    </div> -->
+    <br>
     
-    
-    <!-- FOOTER -->
-    {% include "askme/footer.html" %}
-    
-
   </div>
 
   

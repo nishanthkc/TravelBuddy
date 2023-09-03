@@ -64,7 +64,7 @@
       
       <div class="container border-nish text-center form-nish">
         <br>
-        <form action="{% url 'askme:requestItinerary' %}" method="get" id="get_itinerary_form">
+        <form action="{% url 'askme:requestPersonalItinerary' %}" method="get" id="get_itinerary_form">
           {% csrf_token %}
   
           <div class="form-group">
@@ -118,7 +118,7 @@
               <h1 class="modal-title fs-5" id="staticBackdropLabel">Travel Buddy</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body" id="modal-body">
+              <div class="modal-body">
                 <p>Building Itinerary... may take upto 30sec</p>
               </div>
               <!-- <div class="modal-footer">

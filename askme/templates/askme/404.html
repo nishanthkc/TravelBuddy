@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  {% include "askme/headers.html" %}
+    {% include "askme/headers.html" %}
 </head>
 <body>
 
@@ -19,7 +19,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li> -->
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'askme:food' %}">Food Recommendations</a>
+                <a class="nav-link" href="{% url 'askme:food' %}">Food Recommendations</a>
               </li>
               <!-- <li class="nav-item">
                 <a class="nav-link" href="#">Trip Advisor</a>
@@ -30,7 +30,6 @@
         </div>
     </nav>
 
-
     {% if user.is_authenticated %}
 
         {% if user.socialaccount_set.all %}
@@ -40,8 +39,8 @@
                     <div class="dropdown">
                         <img src="{{ account.extra_data.picture }}" alt="Profile Picture"  class="profile-pic dropdown-toggle" data-bs-toggle="dropdown">        
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">My Itineraries</a></li>
-                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                            <li><a class="dropdown-item" href="{% url 'askme:itineraries' %}">My Itineraries</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
                         </ul>
                     </div>
                     {% endif %}
@@ -50,47 +49,26 @@
         {% endif %}
 
     {% else %}
-            
+
     {% endif %}
 
 
+    
+    <div class="container cont-center test">
 
-    {% if data %}
-    <div class="container text-center">
-      <h1><b>Travel Buddy</b></h1>
-    </div>
-    <div class="container itinerary-box">
-        
-        {% if heading %}
+        <div class="container cont-center">
             <div class="container text-center">
-                <h2><b>{{ heading }}</b></h2>
-            </div>
-        {% endif %}
-        <div class="container text-justify">
-            <div class="row">
-                <div class="col">
-                    {% autoescape off %}
-                    {{ data|linebreaks }}
-                    {% endautoescape %}
-                </div>
+              <h4>Hey Buddy, seems like we lost you... can you try again</h4>
             </div>
 
-            <br>
-            <input type="submit"
-                onclick="window.location='{% url 'askme:food' %}' ; return false;"
-                value="Search Again" class="btn btn-dark">
-                <br>
-                <br>
-
-
-                
         </div>
     
     </div>
-    {% endif %}
 
+    <!-- FOOTER -->
+    {% include "askme/footer.html" %}
 
-    <script src="{% static 'js/foodjs.js' %}"></script>
+    <script src="{% static 'js/jsfile.js' %}"></script>
 </body>
 </html>
 

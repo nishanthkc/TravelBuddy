@@ -14,12 +14,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+
+from django.conf.urls import handler404, handler500
+
+handler404 = "askme.views.page_not_found"
+handler500 = "askme.views.server_error"
+
+
+from django.views.static import serve
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('askme.urls')),
     path('accounts/', include('allauth.urls')),
+
+    # HAD TO USE THIS AS WHEN DEBUG=Flase static files like css and js were not loadind
+    # https://stackoverflow.com/questions/5836674/why-does-debug-false-setting-make-my-django-static-files-access-fail
+    re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}), 
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
 
 # from django.conf.urls import url

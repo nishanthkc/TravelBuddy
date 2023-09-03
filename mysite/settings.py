@@ -105,7 +105,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         # 'NAME': 'askme',
-        'NAME': 'travelbuddy',
+        'NAME': 'version2',
         'USER': 'root',
         'PASSWORD': 'root1234',
         # 'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
@@ -169,6 +169,10 @@ AUTHENTICATION_BACKENDS = [
 
 
 SITE_ID = 1
+
+# settings.py
+LOGIN_URL = '/accounts/google/login/'  # Update with the correct URL
+
 LOGIN_REDIRECT_URL = '/'
 
 # Additional configuration settings
@@ -196,5 +200,6 @@ CSRF_TRUSTED_ORIGINS = ['https://thetravelbuddy.io']
 
 # Adding the following in production settings.py fixed the problem for me:
 # YOU MISS THIS AND YOU'RE FUCKED BY GOOGLE AUTH
+# https://stackoverflow.com/questions/54784981/django-allauth-google-oauth-redirect-uri-mismatch-error
 
-ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'

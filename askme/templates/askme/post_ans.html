@@ -8,7 +8,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{% url 'askme:askme_mform' %}">Travel Buddy</a>
+          <a class="navbar-brand" href="{% url 'askme:home' %}">Travel Buddy</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -18,7 +18,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li> -->
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'askme:askme_foodform' %}">Food Recommendations</a>
+                <a class="nav-link" href="{% url 'askme:food' %}">Food Recommendations</a>
               </li>
               <!-- <li class="nav-item">
                 <a class="nav-link" href="#">Trip Advisor</a>
@@ -61,17 +61,11 @@
         <div class="container text-center">
             <h1><b>Travel Buddy</b></h1>
         </div>
-        {% if heading %}
-            <div class="container text-center">
-                <h2><b>{{ heading }}</b></h2>
-            </div>
-        {% endif %}
-
-
+        
 
             <!-- UNCOMMENT FOR FLIGHTS -->
         <!-- <div class="container text-center">
-            <form id="location-form" method="POST" action="{% url 'askme:flights' %}">
+            <form id="location-form" method="POST" action="#">
                 {% csrf_token %}
                 <input type="hidden" name="latitude" id="latitude-input" value="">
                 <input type="hidden" name="longitude" id="longitude-input" value="">
@@ -80,9 +74,8 @@
 
             
             <!-- UNCOMMENT FOR FLIGHTS -->
-            <!-- <p>Let's start your trip by booking <a id="location-link" href="#">Flights</a> and <a href="{% url 'askme:hotel' place %}" target="_blank">Hotels</a> at {{place}}</p> -->
-            <p>Let's start your trip by booking <a href="{% url 'askme:hotel' place %}" target="_blank">Hotels</a> at {{place}}</p>
-        </div>
+            <!-- <p>Let's start your trip by booking <a id="location-link" href="#">Flights</a> and <a href="#" target="_blank">Hotels</a> at {{place}}</p> -->
+        <!-- </div> -->
 
         <!-- UNCOMMENT FOR FLIGHTS -->
         <!-- <script>
@@ -110,159 +103,150 @@
 
 
 
-        
 
-        <div class="container text-justify">
+        <div class="container text-justify itinerary-box">
+
+            {% for heading, iti in data.items %}
+                
+                <div id="{{forloop.counter}}">
+
+                    <div class="container text-center">
+                        <h2><b>{{ heading }}</b></h2>
+                    </div>
+            
+                    <div class="container text-center">
+                        <p>Let's start your trip by booking <a href="{% url 'askme:hotel' place %}" target="_blank">Hotels</a> at {{place}}</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            {% autoescape off %}
+                            {{ iti|linebreaks }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                </div>
+
+
+            {% endfor %}
+
+            <br>
+
             <div class="row">
                 <div class="col">
-                    {% autoescape off %}
-                    {{ data|linebreaks }}
-                    {% endautoescape %}
+                    <form action="{% url 'askme:getFoodfromItinerary' place %}">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <input class="btn btn-dark" type="submit" value="Get Food Recommendations for {{place}}" onclick="food_popup()">
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            {% if personalised %}
-                {% if heading2 %}
-                    <div class="container text-center" id="heading2">
-                        <h2><b>{{ heading2 }}</b></h2>
-                    </div>
-                {% endif %}
-
-                <div class="row">
-                    <div class="col">
-                        {% autoescape off %}
-                        {{ personalised|linebreaks }}
-                        {% endautoescape %}
-                    </div>
-                </div>
-
-            {% endif %}
-
-            <br>
             
+            <!-- COPY TO CLIPBOARD JS section IMP -->
             <div class="row">
-                <span>Do share it with your family and friends
-                    <a onclick="copyToClipboard('{{page_link}}')" href="#" class="icon-class">
+                <span>
+                    <a onclick="copyToClipboard('{{base_url}}')" href="#" class="icon-class">
+                        Do share it with your family and friends
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
                             <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
                         </svg>
-                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-                        <script>
-                            function copyToClipboard(text) {
-                             navigator.clipboard.writeText(text)
-                             .then(() => {
-                             Swal.fire({
-                             title: 'Link copied to clipboard',
-                             icon: 'success',
-                             timer: 1500
-                             });
-                             })
-                             .catch((error) => console.log(error));
-                            }
-                        </script>
-
                     </a>
                 </span>
             </div>
             
             <br>
 
-            <div class="row">
-                <div class="col">
-                    <input type="submit"
-                        onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
-                        value="Search Again" class="btn btn-dark">
-                </div>
-            </div>
-            
-            <br>
-            <!-- <br> -->
-            
-            {% if heading %}
-                {% if extra_button %}
-                {% if user.is_authenticated %}
-                    
-                    <!-- <br> -->
-                    <div class="row">
-                        <form action="{% url 'askme:askme_chat' %}#heading2" method="post" id="get_another_itinerary_form">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
-                            <input type="hidden" value="{{ duration }}" name="again_duration" id="again_duration">
-                            <span>
-                                Didn't like it? How can I make it better?
-                                <div class="input-group mb-3">
-                                    <input type="text" name="personalize_prompt" class="form-control" placeholder="Ex: make my trip adventurous" aria-label="Ex: make my trip adventurous" aria-describedby="button-addon2">
-                                    <button class="btn btn-outline-secondary text-white btn-dark " type="submit" id="button-addon2 submit_button" onclick="startWaiting()">Go</button>
-                                    <!-- <script>
-                                            function startWaiting() {
-                                                var text = "Building a Personalized Itinerary just for you. Please be patient while we revolutionalize the way you travel with our AI-powered platform";
-                                                typeWriter(text, 0, function() {
-                                                console.log("Text has been typed out!");
-                                                });
-                                            }
-                                    </script> -->
-                                </div>
-                            </span>
-                        </form>
+
+            {% if user.is_authenticated %}
+
+                <!-- <b>{{user}} is AUTHENTICATED</b -->
+
+                <span>With a short description of your needs I can personalise your Itinerary in no time </span>
+                <form action="{% url 'askme:interact' place duration iti_id %}" method="get">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="text" id="personalize_prompt" name="personalize_prompt" class="form-control" placeholder="Ex: make my trip adventurous" aria-label="Ex: make my trip adventurous" aria-describedby="button-addon2">
+                        <input class="btn btn-outline-secondary text-white btn-dark" type="submit" value="Go" id="button-addon2 submit_button" onclick="popup()">
                     </div>
-                    
+                </form>
 
-                    {% else %}
-                        
-                        <div class="row">
-                            <form action="{% url 'askme:askme_again' %}" method="post" id="get_itinerary_form">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ place }}" name="again_place" id="again_place">
-                                <input type="hidden" value="{{ duration }}" name="again_duration" id="again_duration">
-                                <span>
-                                    Didn't like it?
-                                    <!-- BUGBUGBUGBUGBUGBUGBUGBUG -->
-                                    <input type="submit" value="Get another itinerary" class="btn btn-dark" id="submit_button" onclick="startTyping()"> 
-                                </span>
-                            </form>
-                        </div>
-                        
-                        <br>
-                        <div class="row">
-                            <p>Sign-up with <a href="{% provider_login_url 'google' %}">Google</a> for Premium services like Personalization</p>
-                        </div>
-                        
-
-                    {% endif %}
-
-                        <!-- <br> -->
-
-                        <div class="row">
-                            <span id="make-visible"></span>
-                        </div>
-                        
-                        <br>
-                        
-                        <div class="row">
-                            <form action="{% url 'askme:askme_food' %}" method="post" id="get_food_rec_form">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ place }}" name="food_place" id="food_place">
-                                <p>
-                                    <input type="submit" src value="Get Food Recommendations" class="btn btn-dark" id="submit_button" onclick="startFoodTyping()">
-                                </p>
-                            </form>
-                        </div>
-                        
-                    {% endif %}
-                {% endif %}
+            {% else %}
+                
+                <div class="row">
+                    <div class="col">
+                        <p>Sign-up with <a href="{% provider_login_url 'google' %}?next={% url 'askme:createPID' iti_id=iti_id %}">Google</a> for Premium services like Personalization</p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <input type="submit"
+                            onclick="window.location='{% url 'askme:home' %}' ; return false;"
+                            value="Search Again" class="btn btn-dark">
+                    </div>
+                </div>
+                
                 <br>
+            {% endif %}
 
+            <br>
+            
         </div>
         
         
                     
             
-        {% else %}
-        {% endif %}
+    {% else %}
+    {% endif %}
     </div>
 
+    <br>
+
+    <div>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                  <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Travel Buddy</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="modal-body">
+                    <p>Building you a Personal Itinerary... may take upto 30sec</p>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <!-- Modal for Food Popup -->
+        <div class="modal fade" id="foodModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="foodModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="foodModalLabel">Food Recommendations</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="foodModalBody">
+                        <p>Loading food recommendations... may take upto 20sec</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+
+    <!-- COPY TO CLIPBOARD JS FILE IMP -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script src="{% static 'js/jsfile.js' %}"></script>
+
+    <script>
+        
+    </script>
 </body>
 </html>
 

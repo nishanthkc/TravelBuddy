@@ -20,15 +20,14 @@ class QForm(ModelForm):
             'place':forms.TextInput(attrs={'class':"form-control", 'placeholder':"Destination",'id':'place_id', 'type':'text'}),
             'duration':forms.NumberInput(attrs={'class':"form-control", 'placeholder':"No.of Days",'id':'duration_id', 'type':'number', 'onkeypress':"return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"}),
         }
-
+        
 class FForm(ModelForm):
     class Meta:
         model = Food
         # fields = '__all__'
-        fields = ['gpt_place']
+        fields = ['food_place']
         widgets = {
-            'gpt_place':forms.TextInput(attrs={'class':"form-control", 'placeholder':"Destination",'id':'food_place_id', 'type':'text'}),
-
+            'food_place':forms.TextInput(attrs={'class':"form-control", 'placeholder':"Destination",'id':'food_place_id', 'type':'text'}),
         }
 
 # class PersonalizedForm(ModelForm):

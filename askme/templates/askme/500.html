@@ -8,7 +8,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{% url 'askme:askme_mform' %}">Travel Buddy</a>
+          <a class="navbar-brand" href="{% url 'askme:home' %}">Travel Buddy</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -18,7 +18,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li> -->
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'askme:askme_foodform' %}">Food Recommendations</a>
+                <a class="nav-link" href="{% url 'askme:food' %}">Food Recommendations</a>
               </li>
               <!-- <li class="nav-item">
                 <a class="nav-link" href="#">Trip Advisor</a>
@@ -49,42 +49,24 @@
 
     {% else %}
 
-    
     {% endif %}
 
 
-    {% if data %}
-    <div class="container">
-        <div class="container text-center">
-            <h1><b>Travel Buddy</b></h1>
-        </div>
-        {% if heading %}
+    
+    <div class="container cont-center test">
+
+        <div class="container cont-center">
             <div class="container text-center">
-                <h2><b>{{ heading }}</b></h2>
+                <h4>Hey Buddy, seems like we lost you... can you try again</h4>
             </div>
-        {% endif %}
-        <div class="container text-justify">
-            <div class="row">
-                <div class="col">
-                    {% autoescape off %}
-                    {{ data|linebreaks }}
-                    {% endautoescape %}
-                </div>
-            </div>
+
         </div>
-        
-        <br>
-        <input type="submit"
-            onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
-            value="Search Again" class="btn btn-dark">
-        <br>
-        {% else %}
-        {% endif %}
+    
     </div>
 
 
-    <!-- FOOTER -->
-    {% include "askme/footer.html" %}
+      <!-- FOOTER -->
+      {% include "askme/footer.html" %}
 
     <script src="{% static 'js/jsfile.js' %}"></script>
 </body>

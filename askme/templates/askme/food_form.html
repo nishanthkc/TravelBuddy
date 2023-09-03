@@ -1,3 +1,4 @@
+{% load socialaccount %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -7,7 +8,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'askme:askme_mform' %}">Travel Buddy</a>
+      <a class="navbar-brand" href="{% url 'askme:home' %}">Travel Buddy</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -17,7 +18,7 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li> -->
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'askme:askme_foodform' %}">Food Recommendations</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'askme:food' %}">Food Recommendations</a>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link" href="#">Trip Advisor</a>
@@ -62,7 +63,7 @@
         <!-- <span><b>Your personal travel assistant</b></span> -->
         <!-- <span><b>Let Travel Buddy take the guesswork out of planning your trip</b></span> -->
         <!-- <span><b>Let's take the guesswork out of planning your trip with Travel Buddy's itinerary generator</b></span> -->
-        <span><b>Get Food Recommendations</b></span>
+        <h4>Get Food Recommendations</h4>
       </div>
 
 
@@ -74,19 +75,19 @@
           <br>
           <input type="submit" value="Submit">
           <input type="submit"
-          onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
+          onclick="window.location='#' ; return false;"
           value="Cancel">
         </form>
       </div> -->
       
       <div class="container border-nish text-center form-nish">
         <br>
-        <form action="" method="post" id="get_food_rec_form">
+        <form action="{% url 'askme:requestFood' %}" method="get" id="get_food_rec_form">
           {% csrf_token %}
   
           <div class="form-group">
-            {{ form.gpt_place.errors }}
-            {{ form.gpt_place }}
+            {{ form.food_place.errors }}
+            {{ form.food_place }}
           </div>
           <br>
           <br>
@@ -94,11 +95,11 @@
           <p id="error_message" class="text-center small-text"></p>
   
           <div class="form-group">
-            <input class="btn btn-dark" type="submit" value="Get Recommendations" id="food_submit_button" onclick="startFoodTyping()">
+            <input class="btn btn-dark" type="submit" value="Get Recommendations" id="food_submit_button" onclick="popup()">
           </div>
           <br>
           <!-- <input type="submit"
-          onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
+          onclick="window.location='#' ; return false;"
           value="Cancel"> -->
         </form>
       </div>
@@ -110,7 +111,7 @@
     
       <!-- USE THIS IN NEXT VERSION -->
       <!-- <div class="container text-center">        
-        <span>Checkout the most Trending destinations <a href="{% url 'askme:most_searched' %}">here</a></span>
+        <span>Checkout the most Trending destinations <a href="#">here</a></span>
       </div> -->
 
     </div>
@@ -128,14 +129,38 @@
         <br>
         <input type="submit" value="Submit">
         <input type="submit"
-        onclick="window.location='{% url 'askme:askme_mform' %}' ; return false;"
+        onclick="window.location='#' ; return false;"
         value="Cancel">
       </form>
     </div> -->
     
+  </div>
+  
+  <!-- FOOTER -->
+  {% include "askme/footer.html" %}
+
+
+  <div>
     
-    <!-- FOOTER -->
-    {% include "askme/footer.html" %}
+      <!-- Modal -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Travel Buddy</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                  <p>Getting Food Recommendations... may take upto 20sec</p>
+                </div>
+                <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+                </div> -->
+            </div>
+          </div>
+      </div>
+  </div>
 
   
   
