@@ -1,10 +1,11 @@
 from askme.models import Data
 import csv
+import uuid
 # import pandas as pd
 
 def run():
     # with open('askme/data.csv') as file:
-    with open('askme/FINAL_DATA_GPT3.csv') as file:
+    with open('askme/FINAL_DATA_GPT3_V2.csv') as file:
         # reader = csv.reader(file)
         reader = csv.DictReader(file)
         next(reader)  # Advance past the header
@@ -21,7 +22,9 @@ def run():
             try:
                 print("loading row number "+str(count))
                 count += 1
-                data = Data.objects.create(gpt_place=row['place'],
+                guid = str(uuid.uuid4()).split('-')[-1]
+                data = Data.objects.create(itinerary_id=guid,
+                            gpt_place=row['place'],
                             gpt_duration=row['duration'],
                             gpt_result=row['result'])
                 
