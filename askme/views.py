@@ -570,8 +570,8 @@ def goto_personal_itinerary_section(request, piti_id):
     data_set = PersonalisedData.objects.get(p_itinerary_id=piti_id)
     result = ast.literal_eval(data_set.p_gpt_result)
     redirect_url = f"{request.build_absolute_uri(reverse('askme:getPersonalItinerary', args=[piti_id]))}#{len(result)}"
-    return redirect(redirect_url)
-
+    #return redirect(redirect_url)
+    return redirect('askme:getPersonalItinerary', piti_id=piti_id)
 
 def interact(request, place, duration, iti_id):
     personalize_prompt = request.GET.get('personalize_prompt', '').strip()
@@ -585,8 +585,12 @@ def interact(request, place, duration, iti_id):
     
     redirect_url = f"{request.build_absolute_uri(reverse('askme:getPersonalItinerary', args=[iti_id]))}#{len(result)}"
 
-    return redirect(redirect_url)
-    # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
+    #return redirect(redirect_url)
+    return redirect('askme:getPersonalItinerary', piti_id=iti_id)
+    
+
+
+# query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
     # if query_set:
     #     print("present in database: "+str(query_set))
     #     if len(query_set)<2:
