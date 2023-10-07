@@ -5,7 +5,7 @@ import uuid
 
 def run():
     # with open('askme/data.csv') as file:
-    with open('askme/FINAL_DATA_GPT3_V2.csv') as file:
+    with open('askme/Final_chatGPT_data_V2_freq-2.csv') as file:
         # reader = csv.reader(file)
         reader = csv.DictReader(file)
         next(reader)  # Advance past the header
@@ -22,11 +22,14 @@ def run():
             try:
                 print("loading row number "+str(count))
                 count += 1
-                guid = str(uuid.uuid4()).split('-')[-1]
+                guid = "pre"+str(uuid.uuid4()).split('-')[-1]
+                heading = "Here's your "+str(row['duration'])+"-days itinerary for "+str(row['place']).title()
+                result = {heading:row['result']}
+                result = str(result)
                 data = Data.objects.create(itinerary_id=guid,
                             gpt_place=row['place'],
                             gpt_duration=row['duration'],
-                            gpt_result=row['result'])
+                            gpt_result=result)
                 
                 data.save()
             except:
