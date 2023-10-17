@@ -432,7 +432,7 @@ class GetItinerary(View):
         duration = int(data_set.gpt_duration)
         iti_dic = ast.literal_eval(data_set.gpt_result)
         data = {k:CleanDataV2(v, place) for k,v in iti_dic.items()}
-        base_url = request.build_absolute_uri('/')+'itinerary/'+str(iti_id)
+        base_url = request.build_absolute_uri('/')+'itinerary/'+str(place.lower)+'/'+str(iti_id)
         ctx = {'place':place, 'data':data, 'base_url':base_url, 'iti_id':iti_id, 'duration':duration}
         return render(request, 'askme/post_ans.html', ctx)
 
@@ -562,7 +562,7 @@ class GetPersonalItinerary(LoginRequiredMixin, View):
         duration = int(data_set.p_gpt_duration)
         iti_dic = ast.literal_eval(data_set.p_gpt_result)
         data = {k:CleanDataV2(v, place) for k,v in iti_dic.items()}
-        base_url = request.build_absolute_uri('/')+'itinerary/'+str(piti_id)
+        base_url = request.build_absolute_uri('/')+'personalised/'+str(piti_id)
         ctx = {'place':place, 'data':data, 'base_url':base_url, 'iti_id':piti_id, 'duration':duration}
         return render(request, 'askme/post_ans.html', ctx)
 
