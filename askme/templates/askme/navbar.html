@@ -20,9 +20,12 @@
             </li> -->
 
             </ul>
-            <div class="ms-auto"> <!-- Added ms-auto to float the button to the right -->
-            <a href="{% provider_login_url 'google' %}"><button type="button" class="btn btn-dark">Sign In</button></a>
-            </div>
+            {% if user.is_authenticated %}
+            {% else %}
+                <div class="ms-auto"> <!-- Added ms-auto to float the button to the right -->
+                    <a href="{% provider_login_url 'google' %}"><button type="button" class="btn btn-dark">Sign In</button></a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </nav>
