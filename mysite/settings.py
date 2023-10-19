@@ -201,5 +201,6 @@ CSRF_TRUSTED_ORIGINS = ['https://thetravelbuddy.io']
 # Adding the following in production settings.py fixed the problem for me:
 # YOU MISS THIS AND YOU'RE FUCKED BY GOOGLE AUTH
 # https://stackoverflow.com/questions/54784981/django-allauth-google-oauth-redirect-uri-mismatch-error
+# But when you are in development comment the line underneath to use OAUTH
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
