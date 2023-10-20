@@ -589,8 +589,7 @@ class GetFoodfromItinerary(View):
         base_url = request.build_absolute_uri('/')+'foodItinerary/'+str(place)
         ctx = {'place':place, 'data':data, 'base_url':base_url, 'iti_id':food.food_id}
         return render(request, 'askme/personal_post_food.html', ctx)
-
-        return redirect('askme:getFood', place_name=place, food_id=food.food_id)
+        # return redirect('askme:getFood', place_name=place, food_id=food.food_id)
         
 class GetFood(View):
     def get(self, request, place_name, food_id):
@@ -601,11 +600,9 @@ class GetFood(View):
         base_url = request.build_absolute_uri('/')+'foodItinerary/'+str(place_name)
         ctx = {'place':place_name, 'data':data, 'base_url':base_url, 'iti_id':food.food_id}
         return render(request, 'askme/personal_post_food.html', ctx)
-
-
-        heading = f"Food Recommendations for {str(data_set.food_place).title()}"
-        ctx = {'heading':heading, 'data':CleanFoodV2(data_set.food_result)}
-        return render(request, 'askme/post_food.html', ctx)
+        # heading = f"Food Recommendations for {str(data_set.food_place).title()}"
+        # ctx = {'heading':heading, 'data':CleanFoodV2(data_set.food_result)}
+        # return render(request, 'askme/post_food.html', ctx)
 
 
 # PERSONALISATION AND CHAT FOR FOOD RECOMMENDATIONS
