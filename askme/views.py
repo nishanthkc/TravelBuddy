@@ -2,13 +2,13 @@ from django.shortcuts import render, get_list_or_404, redirect
 from django.views import View
 from .askAI import Ask, Clean_data, Clean_data2, AskChat, Clean_list, InteractChat, InteractChat2
 
-from .askAI import AskV2, CleanDataV2, FoodV2, CleanFoodV2, ChatV2
+from .askAI import AskV2, CleanDataV2, FoodV2, CleanFoodV2, ChatV2, FoodChatV2
 
 from .forms import AskForm, QForm, FForm
 import ast
 
 # from .models import Queries, Data, Food, Statistics, Search_history
-from .models import Queries, Data, Food, PersonalisedData
+from .models import Queries, Data, Food, PersonalisedData, PersonalisedFoodData
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .helpers import find_closest_pair, generate_urls
@@ -449,68 +449,8 @@ def server_error(request):
     return render(request, 'askme/500.html', status=500)
 
 
-# FOOD RECOMMENDER
 
-class FoodRecommender(View):
-    def get(self, request):
-        form = FForm()
-        ctx = {'form':form}
-        return render(request, "askme/food_form.html", ctx)
-    
-
-
-def requestFood(request):
-    place = request.GET.get('food_place', '').strip().lower()
-    print(f"working food: {place}")
-    query_set = Food.objects.filter(food_place=place)
-    if query_set:
-        print("present in FOOD database: "+str(query_set))
-        food_id = query_set[random.randint(0,len(query_set)-1)].food_id
-    else:
-        print("NOT in DATABASE")
-        guid = str(uuid.uuid4()).split('-')[-1]
-
-        result = FoodV2(f"{place}")      
-        data = Food.objects.create(food_id=guid, food_place=place, food_result=result)
-        data.save()
-        # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
-        print("added "+str(data))
-        food_id = guid
-
-    return redirect('askme:getFood', place_name=place, food_id=food_id)
-    
-class GetFoodfromItinerary(View):
-    def get(self, request, place):
-        place = place.strip().lower()
-        print(f"working food: {place}")
-        query_set = Food.objects.filter(food_place=place)
-        if query_set:
-            print("present in FOOD database: "+str(query_set))
-            food = query_set[random.randint(0,len(query_set)-1)]
-        else:
-            print("NOT in DATABASE")
-            guid = str(uuid.uuid4()).split('-')[-1]
-
-            result = FoodV2(f"{place}")      
-            food = Food.objects.create(food_id=guid, food_place=place, food_result=result)
-            food.save()
-            # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
-            print("added "+str(food))
-
-        heading = f"Food Recommendations for {str(food.food_place).title()}"
-        ctx = {'heading':heading, 'data':CleanFoodV2(food.food_result)}
-        return redirect('askme:getFood', place_name=place, food_id=food.food_id)
-        
-class GetFood(View):
-    def get(self, request, place_name, food_id):
-        data_set = Food.objects.filter(food_id=food_id)[0]
-        heading = f"Food Recommendations for {str(data_set.food_place).title()}"
-        ctx = {'heading':heading, 'data':CleanFoodV2(data_set.food_result)}
-        return render(request, 'askme/post_food.html', ctx)
-
-
-
-# PERSONALISATION AND CHAT
+# PERSONALISATION AND CHAT FOR ITINERARY
 
 class PersonalHome(LoginRequiredMixin, View):
     def get(self, request):
@@ -590,6 +530,159 @@ def interact(request, place, duration, iti_id):
     
 
 
+# FOOD RECOMMENDER
+
+class FoodRecommender(View):
+    def get(self, request):
+        form = FForm()
+        ctx = {'form':form}
+        if request.user.is_authenticated:
+            return redirect('askme:personal_food')
+        else:
+            return render(request, "askme/food_form.html", ctx)
+    
+
+
+def requestFood(request):
+    place = request.GET.get('food_place', '').strip().lower()
+    print(f"working food: {place}")
+    query_set = Food.objects.filter(food_place=place)
+    if query_set:
+        print("present in FOOD database: "+str(query_set))
+        food_id = query_set[random.randint(0,len(query_set)-1)].food_id
+    else:
+        print("NOT in DATABASE")
+        guid = str(uuid.uuid4()).split('-')[-1]
+        heading = f"Food Recommendations for {str(place).title()}"
+        result = {heading:FoodV2(f"{place}")}
+        result = str(result)
+        data = Food.objects.create(food_id=guid, food_place=place, food_result=result)
+        data.save()
+        # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
+        print("added "+str(data))
+        food_id = guid
+
+    return redirect('askme:getFood', place_name=place, food_id=food_id)
+    
+class GetFoodfromItinerary(View):
+    def get(self, request, place):
+        place = place.strip().lower()
+        print(f"working food: {place}")
+        query_set = Food.objects.filter(food_place=place)
+        if query_set:
+            print("present in FOOD database: "+str(query_set))
+            food = query_set[random.randint(0,len(query_set)-1)]
+        else:
+            print("NOT in DATABASE")
+            guid = str(uuid.uuid4()).split('-')[-1]
+            heading = f"Food Recommendations for {str(place).title()}"
+            result = {heading:FoodV2(f"{place}")}
+            result = str(result)
+            food = Food.objects.create(food_id=guid, food_place=place, food_result=result)
+            food.save()
+            # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
+            print("added "+str(food))
+
+        
+        food_dic = ast.literal_eval(food.food_result)
+        data = {k:CleanFoodV2(v) for k,v in food_dic.items()}
+        base_url = request.build_absolute_uri('/')+'foodItinerary/'+str(place)
+        ctx = {'place':place, 'data':data, 'base_url':base_url, 'iti_id':food.food_id}
+        return render(request, 'askme/personal_post_food.html', ctx)
+
+        return redirect('askme:getFood', place_name=place, food_id=food.food_id)
+        
+class GetFood(View):
+    def get(self, request, place_name, food_id):
+        food = Food.objects.filter(food_id=food_id)[0]
+
+        food_dic = ast.literal_eval(food.food_result)
+        data = {k:CleanFoodV2(v) for k,v in food_dic.items()}
+        base_url = request.build_absolute_uri('/')+'foodItinerary/'+str(place_name)
+        ctx = {'place':place_name, 'data':data, 'base_url':base_url, 'iti_id':food.food_id}
+        return render(request, 'askme/personal_post_food.html', ctx)
+
+
+        heading = f"Food Recommendations for {str(data_set.food_place).title()}"
+        ctx = {'heading':heading, 'data':CleanFoodV2(data_set.food_result)}
+        return render(request, 'askme/post_food.html', ctx)
+
+
+# PERSONALISATION AND CHAT FOR FOOD RECOMMENDATIONS
+class PersonalFoodRecommender(LoginRequiredMixin, View):
+    def get(self, request):
+        form = FForm()
+        ctx = {'form':form}
+        if request.user.is_authenticated:
+            return render(request, 'askme/pesonal_food_form.html', ctx)
+        else:
+            return redirect('askme:food')
+
+def requestPersonalfood(request):
+    start = datetime.now()
+    place = request.GET.get('food_place', '').strip().lower()
+    print(f"Requesting Personal food recommendation: {place}")
+    query_set = Food.objects.filter(food_place=place)
+    print("Checking in FOOD DATA DB")
+    if query_set:
+        print("present in FOOD DATA DB: "+str(query_set))
+        food_id = query_set[random.randint(0,len(query_set)-1)].food_id
+    else:
+        print("NOT in FOOD DATA DB, hence creating an personal instance")
+        guid = str(uuid.uuid4()).split('-')[-1]
+        heading = f"Food Recommendations for {str(place).title()}"
+        result = {heading:FoodV2(f"{place}")}
+        result = str(result)
+        data = Food.objects.create(food_id=guid, food_place=place, food_result=result)
+        data.save()
+        # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
+        print("added "+str(data))
+        food_id = guid
+    end = datetime.now()
+    print(f"Took {end-start} sec")
+    return redirect('askme:createPFoodID', food_id=food_id)
+        
+
+def createPFoodID(request, food_id):
+    food_data = Food.objects.get(food_id=food_id)
+    guid = str(uuid.uuid4()).split('-')[-1]
+    data = PersonalisedFoodData.objects.create(user=request.user ,p_food_id=guid, p_food_place=food_data.food_place, p_food_result=food_data.food_result)
+    data.save()
+    return redirect('askme:getPersonalFood', p_food_id=guid)
+
+class GetPersonalFood(LoginRequiredMixin, View):
+    def get(self, request, p_food_id):
+        data_set = PersonalisedFoodData.objects.get(p_food_id=p_food_id)
+        place = data_set.p_food_place.title()
+        food_dic = ast.literal_eval(data_set.p_food_result)
+        data = {k:CleanFoodV2(v) for k,v in food_dic.items()}
+        base_url = request.build_absolute_uri('/')+'personalisedFood/'+str(p_food_id)
+        ctx = {'place':place, 'data':data, 'base_url':base_url, 'iti_id':p_food_id}
+        return render(request, 'askme/personal_post_food.html', ctx)
+
+def goto_personal_food_section(request, p_food_id):
+    data_set = PersonalisedFoodData.objects.get(p_food_id=p_food_id)
+    result = ast.literal_eval(data_set.p_food_result)
+    redirect_url = f"{request.build_absolute_uri(reverse('askme:getPersonalFood', args=[p_food_id]))}#{len(result)}"
+    #return redirect(redirect_url)
+    return redirect('askme:getPersonalFood', p_food_id=p_food_id)
+
+def food_interact(request, place, p_food_id):
+    personalize_prompt = request.GET.get('personalize_prompt', '').strip()
+    print(f"personalizing food recommendations: {personalize_prompt}")
+
+    data_set = PersonalisedFoodData.objects.get(p_food_id=p_food_id)
+    result = ast.literal_eval(data_set.p_food_result)
+    result[personalize_prompt] = FoodChatV2(personalize_prompt, place, result)
+    data_set.p_food_result = result
+    data_set.save()
+    
+    redirect_url = f"{request.build_absolute_uri(reverse('askme:getPersonalItinerary', args=[p_food_id]))}#{len(result)}"
+
+    #return redirect(redirect_url)
+    return redirect('askme:getPersonalFood', p_food_id=p_food_id)
+
+
 # query_set = Data.objects.filter(gpt_place=place, gpt_duration=duration)
     # if query_set:
     #     print("present in database: "+str(query_set))
@@ -636,4 +729,16 @@ class ItinerariesView(View):
         else:
             ctx = {'none':True}
             return render(request, 'askme/itineraries.html', ctx)
+            
+class FoodRecommendationsView(View):
+    def get(self, request):
+        query_set = PersonalisedFoodData.objects.filter(user = request.user)
+        if len(query_set)>0:
+            iti_list = [ (i.p_food_place, list(ast.literal_eval(i.p_food_result).keys())[-1], i.p_food_id) for i in query_set]
+            res = [(p,h,i) if h.split(" ")[0]!="Here's" else (p,"",i) for p,h,i in iti_list]
+            ctx = {'itineraries':res}
+            return render(request, 'askme/food_recommendations.html', ctx)
+        else:
+            ctx = {'none':True}
+            return render(request, 'askme/food_recommendations.html', ctx)
             

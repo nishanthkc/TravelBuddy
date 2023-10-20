@@ -42,67 +42,22 @@
         <div class="container text-center">
             <h1><b>Travel Buddy</b></h1>
         </div>
-        
-
-            <!-- UNCOMMENT FOR FLIGHTS -->
-        <!-- <div class="container text-center">
-            <form id="location-form" method="POST" action="#">
-                {% csrf_token %}
-                <input type="hidden" name="latitude" id="latitude-input" value="">
-                <input type="hidden" name="longitude" id="longitude-input" value="">
-                <input type="hidden" name="destination" id="longitude-input" value="{{ place }}">
-            </form> -->
-
-            
-            <!-- UNCOMMENT FOR FLIGHTS -->
-            <!-- <p>Let's start your trip by booking <a id="location-link" href="#">Flights</a> and <a href="#" target="_blank">Hotels</a> at {{place}}</p> -->
-        <!-- </div> -->
-
-        <!-- UNCOMMENT FOR FLIGHTS -->
-        <!-- <script>
-            function getLocation() {
-              if (window.navigator.geolocation) {
-                // Geolocation available
-                window.navigator.geolocation.getCurrentPosition(
-                  function(position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    const latitudeInput = document.getElementById('latitude-input');
-                    const longitudeInput = document.getElementById('longitude-input');
-                    latitudeInput.value = latitude;
-                    longitudeInput.value = longitude;
-                    document.getElementById('location-form').submit();
-                  },
-                  console.log
-                );
-              }
-            }
-            
-          
-            document.getElementById('location-link').addEventListener('click', getLocation);   
-        </script> -->
-
-
 
 
         <div class="container text-justify itinerary-box">
 
-            {% for heading, iti in data.items %}
+            {% for heading, food in data.items %}
                 
                 <div id="{{forloop.counter}}">
 
                     <div class="container text-center">
                         <h2><b>{{ heading }}</b></h2>
                     </div>
-            
-                    <div class="container text-center">
-                        <p>Let's start your trip by booking <a href="{% url 'askme:hotel' place %}" target="_blank">Hotels</a> at {{place}}</p>
-                    </div>
 
                     <div class="row">
                         <div class="col">
                             {% autoescape off %}
-                            {{ iti|linebreaks }}
+                            {{ food|linebreaks }}
                             {% endautoescape %}
                         </div>
                     </div>
@@ -112,17 +67,6 @@
             {% endfor %}
 
             <br>
-
-            <div class="row">
-                <div class="col">
-                    <form action="{% url 'askme:getFoodfromItinerary' place %}">
-                        {% csrf_token %}
-                        <div class="input-group mb-3">
-                            <input class="btn btn-dark" type="submit" value="Get Food Recommendations for {{place}}" onclick="food_popup()">
-                        </div>
-                    </form>
-                </div>
-            </div>
 
             
             <!-- COPY TO CLIPBOARD JS section IMP -->
@@ -144,11 +88,11 @@
 
                 <!-- <b>{{user}} is AUTHENTICATED</b -->
 
-                <span>With a short description of your needs I can personalise your Itinerary in no time </span>
-                <form action="{% url 'askme:interact' place duration iti_id %}" method="get">
+                <span>Provide me an input of what kind of food you would like to eat!</span>
+                <form action="{% url 'askme:food_interact' place iti_id %}" method="get">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input type="text" id="personalize_prompt" name="personalize_prompt" class="form-control" placeholder="Ex: make my trip adventurous" aria-label="Ex: make my trip adventurous" aria-describedby="button-addon2">
+                        <input type="text" id="personalize_prompt" name="personalize_prompt" class="form-control" placeholder="Ex: suggest vegetarian food" aria-label="Ex: suggest vegetarian food" aria-describedby="button-addon2">
                         <input class="btn btn-outline-secondary text-white btn-dark" type="submit" value="Go" id="button-addon2 submit_button" onclick="popup()">
                     </div>
                 </form>
@@ -169,8 +113,8 @@
             <div class="row">
                 <div class="col">
                     <input type="submit"
-                        onclick="window.location='{% url 'askme:home' %}' ; return false;"
-                        value="Search Again" class="btn btn-dark">
+                onclick="window.location='{% url 'askme:food' %}' ; return false;"
+                value="Search Again" class="btn btn-dark">
                 </div>
             </div>
 
@@ -227,9 +171,7 @@
 
     <script src="{% static 'js/jsfile.js' %}"></script>
 
-    <script>
-        
-    </script>
+    <script src="{% static 'js/foodjs.js' %}"></script>
 </body>
 </html>
 

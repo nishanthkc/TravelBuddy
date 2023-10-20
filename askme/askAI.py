@@ -259,3 +259,27 @@ def ChatV2(prompt, place, duration, result):
     )
 
     return completion.choices[0].message.content
+
+
+def FoodChatV2(prompt, place, result):
+    fixed = f"{place}"
+    heading_fixed = f"Food Recommendations for {str(place).title()}"
+    message_list=[
+        {"role": "system", "content": "Talk like a very funny and excited Foodie who tried every food. given the name of a place give a food recommendations in that place, 5 each of famous: restaurants, cafes and local foods"}
+        ]
+    for heading,chat_response in result.items():
+        if heading==heading_fixed:
+            message_list.append({"role":"user","content":fixed})
+            message_list.append({"role":"assistant","content":chat_response})
+        else:
+            message_list.append({"role":"user","content":fixed+heading})
+            message_list.append({"role":"assistant","content":chat_response})
+    message_list.append({"role":"user","content":fixed+prompt})
+    
+    openai.api_key = "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" #thetravelbuddy.io V2
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=message_list
+    )
+
+    return completion.choices[0].message.content

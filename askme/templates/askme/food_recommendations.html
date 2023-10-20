@@ -19,8 +19,8 @@
                     <div class="dropdown">
                         <img src="{{ account.extra_data.picture }}" alt="Profile Picture"  class="profile-pic dropdown-toggle" data-bs-toggle="dropdown">        
                         <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="{% url 'askme:itineraries' %}">My Itineraries</a></li>
-                          <li><a class="dropdown-item" href="{% url 'askme:foodRecommendations' %}">My Food Recommendations</a></li>
+                            <li><a class="dropdown-item" href="{% url 'askme:itineraries' %}">My Itineraries</a></li>
+                            <li><a class="dropdown-item" href="{% url 'askme:foodRecommendations' %}">My Food Recommendations</a></li>
                             <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
                         </ul>
                     </div>
@@ -37,7 +37,7 @@
 
     <div class="container text-center">
       <h1><b>Travel Buddy</b></h1>
-      <h2>Your Itineraries</h2>
+      <h2>Your Food Recommendations</h2>
     </div>
 
     <br>
@@ -47,7 +47,7 @@
       {% if none %}
       <div class="container" style="overflow-y: scroll;">
         <div class="text-center">
-          <b>No Itineraries yet</b>
+          <b>No Recommendations yet</b>
         </div>
       </div>
       {% else %}
@@ -59,7 +59,7 @@
                           <div class="card-body">
                               <h5 class="card-title">{{ place|title }}</h5>
                               <p class="card-text">{{ heading }}</p>
-                              <a href="{% url 'askme:goto_personal_itinerary_section' piti_id %}" class="btn btn-dark">Go here</a>
+                              <a href="{% url 'askme:goto_personal_food_section' piti_id %}" class="btn btn-dark">Go here</a>
                           </div>
                       </div>
                   </div>

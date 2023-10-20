@@ -63,7 +63,7 @@
       
       <div class="container border-nish text-center form-nish">
         <br>
-        <form action="{% url 'askme:requestFood' %}" method="get" id="get_food_rec_form">
+        <form action="{% url 'askme:requestPersonalFood' %}" method="get" id="get_food_rec_form">
           {% csrf_token %}
   
           <div class="form-group">
@@ -146,5 +146,6 @@
   
   
   <script src="{% static 'js/foodjs.js' %}"></script>
+  <script src="{% static 'js/jsfile.js' %}"></script>
 </body>
 </html>

@@ -49,4 +49,14 @@ urlpatterns = [
     path('sendFood', views.requestFood, name="requestFood"),
     path('foodItinerary/<str:place>', views.GetFoodfromItinerary.as_view(), name="getFoodfromItinerary"),
     path('food/<str:place_name>/<str:food_id>', views.GetFood.as_view(), name="getFood"),
+
+    path('personalisedFoodRecommender', views.PersonalFoodRecommender.as_view(), name="personal_food"),
+    path('personal-food-send', views.requestPersonalfood, name="requestPersonalFood"),
+    path('pcreate/food/<str:food_id>', views.createPFoodID, name="createPFoodID"),
+    path('personalisedFood/<str:p_food_id>', views.GetPersonalFood.as_view(), name="getPersonalFood"),
+    path('goto_personal_food_section/<str:p_food_id>', views.goto_personal_food_section, name="goto_personal_food_section"),
+
+    path('food-interact/<str:place>/<str:p_food_id>', views.food_interact, name="food_interact"),
+
+    path('my-recommendations/', views.FoodRecommendationsView.as_view(), name="foodRecommendations"),
 ]

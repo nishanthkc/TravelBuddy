@@ -35,7 +35,14 @@ class Food(models.Model):
 
     def __str__(self):
         return self.food_place+"( "+str(self.food_id)+" )"
+class PersonalisedFoodData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    p_food_id = models.CharField(max_length=30, editable=False, unique=True)
+    p_food_place = models.CharField(max_length=30)
+    p_food_result = models.TextField(max_length=100000)
 
+    def __str__(self):
+        return self.p_food_place+"( "+str(self.p_food_id)+" )"
 # class Statistics(models.Model):
 #     stat_place = models.CharField(max_length=30)
 #     stat_duration  = models.IntegerField(validators=[MinValueValidator(1, "Duration must be greater than 1 character")])

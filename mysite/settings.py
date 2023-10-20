@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bo!d2$+x#&37)_*nu!68ldb!=-^a0bh1o1ba^7#btowg%+_!jf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*', 'thetravelbuddy.io', '3.140.140.209']
 
@@ -203,4 +203,4 @@ CSRF_TRUSTED_ORIGINS = ['https://thetravelbuddy.io']
 # https://stackoverflow.com/questions/54784981/django-allauth-google-oauth-redirect-uri-mismatch-error
 # But when you are in development comment the line underneath to use OAUTH
 
-ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
